@@ -1,5 +1,5 @@
 (() => {
-  const webhookUrl = "https://n8n-dev.inticousa.com/webhook-test/2a9d7cbf-f0de-4395-9614-127b1f3105bb"; // <-- reemplaza con tu webhook de n8n
+  const webhookUrl = "https://n8n-dev.inticousa.com/webhook/2a9d7cbf-f0de-4395-9614-127b1f3105bb"; // <-- reemplaza con tu webhook de n8n
 
   const $ = id => document.getElementById(id);
   const widget = $("intico-widget");
@@ -112,3 +112,4 @@
   // Mensaje inicial
   pushMessage("Hola! Puedes enviar texto o grabar un mensaje de voz.", "bot");
 })();
+
