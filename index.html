@@ -1,106 +1,58 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WebChat n8n</title>
-  <!-- Estilos base del chat -->
-  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
-
-  <!-- Estilos personalizados para el chat -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Widget IntiCo</title>
+  <link rel="stylesheet" href="styles.css" />
   <style>
-    :root {
-      --chat--color-primary: #FB5506;
-      --chat--color-primary-shadow-50: #21b4ce;
-      --chat--color-primary-shadow-100: #21b4ce;
-      --chat--color-primary-shade-50: #FB5506;
-      --chat--color-primary-shade-100: #FB5506;
-
-      --chat--color-secondary: #20b69e;
-      --chat--color-secondary-shadow-50: #1ca08a;
-      --chat--color-white: #ffffff;
-      --chat--color-light: #f2f4f8;
-      --chat--color-light-shadow-50: #e6e9f1;
-      --chat--color-light-shadow-100: #c2c5cc;
-      --chat--color-medium: #d2d4d9;
-      --chat--color-dark: #FB5506;
-      --chat--color-disabled: #777980;
-      --chat--color-typing: #404040;
-
-      --chat--spacing: 1rem;
-      --chat--border-radius: 0.25rem;
-      --chat--transition-duration: 0.15s;
-
-      --chat--window--width: 400px;
-      --chat--window--height: 600px;
-
-      --chat--header-height: auto;
-      --chat--header--padding: var(--chat--spacing);
-      --chat--header--background: var(--chat--color-dark);
-      --chat--header--color: var(--chat--color-light);
-      --chat--header--border-top: none;
-      --chat--header--border-bottom: none;
-      --chat--heading--font-size: 1rem;
-      --chat--subtitle--font-size: inherit;
-      --chat--subtitle--line-height: 1.2;
-
-      --chat--textarea--height: 50px;
-
-      --chat--message--font-size: 0.75rem;
-      --chat--message--padding: var(--chat--spacing);
-      --chat--message--border-radius: var(--chat--border-radius);
-      --chat--message--line-height: 0.5;
-      --chat--message--bot--background: var(--chat--color-white);
-      --chat--message--bot--color: var(--chat--color-dark);
-      --chat--message--bot--border: none;
-      --chat--message--user--background: var(--chat--color-secondary);
-      --chat--message--user--color: var(--chat--color-white);
-      --chat--message--user--border: none;
-      --chat--message--pre--background: rgba(0, 0, 0, 0.05);
-
-      --chat--toggle--background: var(--chat--color-primary);
-      --chat--toggle--hover-background: var(--chat--color-primary-shadow-50);
-      --chat--toggle--active-background: var(--chat--color-primary-shadow-100);
-      --chat--toggle--color: var(--chat--color-white);
-      --chat--toggle--size: 64px;
-      --chat--heading--font-size: 1em;
+    body, html {
+      margin: 0; padding: 0; height: 100%; width: 100%;
+      overflow: hidden;
+    }
+    iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+      z-index: 0;
     }
   </style>
 </head>
-<body style="margin: 0; padding: 0; height: 100vh; overflow: hidden;">
-  <iframe src="https://intico.ai/" width="100%" height="100%" style="border: none; position: absolute; top: 0; left: 0; z-index: 0;"></iframe>
+<body>
+  <!-- Fondo: sitio web de IntiCo -->
+  <iframe src="https://intico.ai/" title="IntiCo"></iframe>
 
-   <!-- El widget de chat se inyecta automáticamente -->
-  <script type="module">
-    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+  <!-- ÍCONO flotante -->
+  <div id="chat-icon" title="Chatear con IntiCo">
+  </div>
 
-    createChat({
-      webhookUrl: 'http://localhost:5678/webhook/6fa25a60-bbaf-464b-9a43-af8220f880e0/chat',
-      webhookConfig: {
-        method: 'POST',
-        headers: {}
-      },
-      target: '#n8n-chat',
-      mode: 'window',
-      chatInputKey: 'chatInput',
-      chatSessionKey: 'sessionId',
-      metadata: {},
-      showWelcomeScreen: false,
-      defaultLanguage: 'en',
-      initialMessages: [
-        '¡Hola! 👋',
-        'Mi nombre es IntiCo. ¿Cómo puedo ayudarte hoy?'
-      ],
-      i18n: {
-        en: {
-          title: '¡Hola! 👋',
-          subtitle: "Inicia un chat. Estamos aquí para ayudarte las 24 horas, los 7 días de la semana.",
-          footer: '',
-          getStarted: 'Nueva conversación',
-          inputPlaceholder: 'Escribe tu pregunta..',
-        },
-      },
-    });
-  </script>
+  <!-- WIDGET flotante (oculto por defecto) -->
+  <div id="intico-widget" class="widget hidden">
+    <header class="widget-header">
+      <a href="https://intico.ai/" target="_blank" rel="noopener noreferrer">IntiCo</a>
+      <button id="close-widget" title="Cerrar">✕</button>
+    </header>
+
+    <main class="widget-body">
+      <div id="messages" class="messages"></div>
+
+      <form id="chat-form" class="chat-form">
+        <input id="text-input" type="text" placeholder="Escribe un mensaje..." autocomplete="off"/>
+        <button id="send-text" type="button">Enviar</button>
+
+        <div class="recorder-controls">
+          <button id="record-btn" type="button">Audio</button>
+          <span id="record-status"></span>
+        </div>
+      </form>
+    </main>
+
+    <footer class="widget-footer">
+      <small>Enviado a tu flujo n8n • Soporta texto y audio</small>
+    </footer>
+  </div>
+
+  <script src="widget.js"></script>
 </body>
 </html>
